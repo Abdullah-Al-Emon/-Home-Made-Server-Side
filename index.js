@@ -33,6 +33,38 @@ async function run()
             const service = await serviceCollection.findOne(query);
             res.send(service)
         })
+
+        const reviewCollection = client.db('homeMade').collection('reviews');
+
+        app.post('/reviews', async (req, res) => {
+            const reviews = req.body;
+            const result = await reviewCollection.insertOne(reviews);
+            res.send(result);
+        })
+
+        app.get('/reviews', async (req, res) => {
+            // const decoded = req.decoded;
+            // console.log(decoded)
+            // if(decoded.email !== req.query.email){
+            //     res.status(403).send({message: 'unauthorized access'})
+            // }
+            let query = {};
+            if(req.query.email){
+                query ={
+                    email: req.query.email
+                }
+            }
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        } )
+
+        app.delete('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result)
+        })
     }
     finally {
 
