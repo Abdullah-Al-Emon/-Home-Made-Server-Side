@@ -34,6 +34,12 @@ async function run()
             res.send(service)
         })
 
+        app.post('/services', async (req, res) => {
+            const reviews = req.body;
+            const result = await serviceCollection.insertOne(reviews);
+            res.send(result);
+        })
+
         const reviewCollection = client.db('homeMade').collection('reviews');
 
         app.post('/reviews', async (req, res) => {
